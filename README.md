@@ -15,3 +15,5 @@
 - 自动化校验流程（Husky）
 
 - TailwindCSS 类自动排序
+
+## 🎇 Mock 数据优雅的解决方案

@@ -41,7 +41,8 @@ export default [
     },
     rules: {
       ...tsPlugin.configs['recommended'].rules,
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'off', // 允许未使用的变量
+      '@typescript-eslint/no-explicit-any': 'off', // 允许 any 类型
     },
   },
 

@@ -1,15 +1,8 @@
-import { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
+import useRouteAuth from '@/hooks/useRouteAuth'
 
 const Layouts = () => {
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const token = localStorage.getItem('task-token')
-    if (!token) {
-      navigate('/login')
-    }
-  }, [])
+  useRouteAuth()
   return (
     <div className="flex h-full w-full">
       <div className="h-full w-[300px] bg-[#f4f5f7]"></div>

@@ -1,4 +1,11 @@
-export * from './modules/user'
-export * from './modules/task'
-export * from './modules/file'
-export * from './modules/project'
+import file from './modules/file'
+import project from './modules/project'
+import task from './modules/task'
+import user from './modules/user'
+
+export default {
+  user,
+  project,
+  task,
+  file,
+}

@@ -22,12 +22,11 @@ const Login = () => {
       .login(values)
       .then(res => {
         if (res.code === 200) {
-          message.success(res.msg)
+          message.success('登录成功')
           localStorage.setItem('task-token', res.data.token)
           localStorage.setItem('task-user', JSON.stringify(res.data.user))
           navigate('/')
         } else {
-          console.log(res)
           message.error(res.msg)
         }
       })

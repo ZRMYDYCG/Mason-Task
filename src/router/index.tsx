@@ -6,7 +6,8 @@ import Register from '@/pages/register'
 import File from '@/pages/file'
 import Calendar from '@/pages/calendar'
 import Project from '@/pages/project'
-import Index from '@/pages/dir'
+import Dir from '@/pages/dir'
+import Message from '@/pages/message'
 
 const Routes = () => {
   return useRoutes([
@@ -23,8 +24,12 @@ const Routes = () => {
           element: <File />,
         },
         {
+          path: 'message',
+          element: <Message />,
+        },
+        {
           path: '/file/dir',
-          element: <Index />,
+          element: <Dir />,
         },
         {
           path: '/calendar',

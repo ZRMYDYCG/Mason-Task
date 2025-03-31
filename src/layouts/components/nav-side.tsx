@@ -1,7 +1,7 @@
 import { JSX } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CalendarOutlined, FileOutlined, HomeOutlined } from '@ant-design/icons'
+import { CalendarOutlined, FileOutlined, HomeOutlined, ProjectOutlined } from '@ant-design/icons'
 import ProjectList from './project-list.tsx'
 import UserInfo from './user-info.tsx'
 
@@ -32,6 +32,11 @@ const NavSide = () => {
       name: '日历',
       path: '/calendar',
       icon: <CalendarOutlined />,
+    },
+    {
+      name: '消息',
+      path: '/message',
+      icon: <ProjectOutlined />,
     },
     {
       name: '文件',

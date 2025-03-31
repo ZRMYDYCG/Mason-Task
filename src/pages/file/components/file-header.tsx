@@ -41,7 +41,7 @@ const FileHeader = (props: Props) => {
       key: '1',
       label: (
         <div className="flex">
-          <img src="https://www.dootask.com/js/build/folder.68818161.svg" width={20} height={20} />
+          <img src="/file/new-file.svg" width={20} height={20} alt="#" />
           <div className="ml-1">新建文件夹</div>
         </div>
       ),
@@ -54,11 +54,7 @@ const FileHeader = (props: Props) => {
       label: (
         <Upload showUploadList={false} customRequest={handleUpload}>
           <div className="flex">
-            <img
-              src="https://www.dootask.com/js/build/upload.01661a19.svg"
-              width={20}
-              height={20}
-            />
+            <img src="/file/upload-file.svg" width={20} height={20} alt="#" />
             <div className="ml-1">上传文件</div>
           </div>
         </Upload>
@@ -69,7 +65,7 @@ const FileHeader = (props: Props) => {
       label: (
         <Upload showUploadList={false} customRequest={handleUpload} directory>
           <div className="flex">
-            <img src="https://www.dootask.com/js/build/updir.354f6e04.svg" width={20} height={20} />
+            <img src="/file/upload-dir.svg" width={20} height={20} alt="#" />
             <div className="ml-1">上传文件夹</div>
           </div>
         </Upload>
@@ -79,11 +75,7 @@ const FileHeader = (props: Props) => {
       key: '4',
       label: (
         <div className="flex">
-          <img
-            src="https://www.dootask.com/js/build/document.624c4d76.svg"
-            width={20}
-            height={20}
-          />
+          <img src="/file/text-file.svg" width={20} height={20} alt="#" />
           <div className="ml-1">文本</div>
         </div>
       ),
@@ -92,7 +84,7 @@ const FileHeader = (props: Props) => {
       key: '5',
       label: (
         <div className="flex">
-          <img src="https://www.dootask.com/js/build/flow.a58ab0df.svg" width={20} height={20} />
+          <img src="/file/chart-file.svg" width={20} height={20} alt="#" />
           <div className="ml-1">图表</div>
         </div>
       ),
@@ -101,7 +93,7 @@ const FileHeader = (props: Props) => {
       key: '6',
       label: (
         <div className="flex">
-          <img src="https://www.dootask.com/js/build/mind.9f75182d.svg" width={20} height={20} />
+          <img src="/file/mind-file.svg" width={20} height={20} alt="#" />
           <div className="ml-1">思维导图</div>
         </div>
       ),
@@ -113,7 +105,7 @@ const FileHeader = (props: Props) => {
       key: '7',
       label: (
         <div className="flex">
-          <img src="https://www.dootask.com/js/build/word.d0364128.svg" width={20} height={20} />
+          <img src="/file/word-file.svg" width={20} height={20} alt="#" />
           <div className="ml-1">Word 文档</div>
         </div>
       ),
@@ -122,7 +114,7 @@ const FileHeader = (props: Props) => {
       key: '8',
       label: (
         <div className="flex">
-          <img src="https://www.dootask.com/js/build/excel.82abb1cd.svg" width={20} height={20} />
+          <img src="/file/excel-file.svg" width={20} height={20} alt="#" />
           <div className="ml-1">Excel 工作表</div>
         </div>
       ),
@@ -131,7 +123,7 @@ const FileHeader = (props: Props) => {
       key: '9',
       label: (
         <div className="flex">
-          <img src="https://www.dootask.com/js/build/ppt.03f2290d.svg" width={20} height={20} />
+          <img src="/file/ppt-file.svg" width={20} height={20} alt="#" />
           <div className="ml-1">PPT 演示文稿</div>
         </div>
       ),

@@ -133,7 +133,7 @@ const FileTable = (props: Props) => {
     if (item.isDir) {
       return (
         <Image
-          src="https://www.dootask.com/js/build/folder.68818161.svg"
+          src="/file/new-file.svg"
           preview={false}
           width={width}
           height={height}

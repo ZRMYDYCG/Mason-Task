@@ -43,6 +43,10 @@ export default [
       ...tsPlugin.configs['recommended'].rules,
       '@typescript-eslint/no-unused-vars': 'off', // 允许未使用的变量
       '@typescript-eslint/no-explicit-any': 'off', // 允许 any 类型
+      '@typescript-eslint/no-unused-expressions': 'off', // 允许未使用的表达式
+      '@typescript-eslint/no-use-before-define': 'off', // 允许变量提前定义
+      '@typescript-eslint/no-empty-function': 'off', // 允许空函数
+      '@typescript-eslint/no-empty-interface': 'off', // 允许空接口
     },
   },
 

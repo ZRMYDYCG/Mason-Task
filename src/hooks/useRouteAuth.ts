@@ -8,7 +8,7 @@ const useRouteAuth = (options?: { redirectPath?: string }) => {
   useEffect(() => {
     const token = localStorage.getItem('task-token')
     if (!token) {
-      navigate(redirectPath, { replace: true }) // 使用 replace 防止回退
+      navigate(redirectPath, { replace: true })
     }
   }, [navigate, redirectPath])
 }

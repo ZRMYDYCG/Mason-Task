@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react'
 import { LoginUser, TaskItem } from '@/api/type'
-import { FileTextOutlined } from '@ant-design/icons'
+import {
+  FileTextOutlined,
+  ClockCircleOutlined,
+  ExclamationCircleOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons'
 import api from '../../api'
 import dayjs from 'dayjs'
-import { Tag, Empty } from 'antd'
+import { Tag, Empty, Button } from 'antd'
 import Task from './components/task.tsx'
 
 const Home = () => {
@@ -13,8 +18,10 @@ const Home = () => {
   const [overTaskList, setOverTaskList] = useState<TaskItem[]>([])
   const [unCompleteList, setUnCompleteList] = useState<TaskItem[]>([])
   const [currentTime, setCurrentTime] = useState(dayjs())
+  const [isLoading, setIsLoading] = useState(true)
 
   const getTaskList = () => {
+    setIsLoading(true)
     api.user
       .findTask({
         id: user.id,
@@ -34,6 +41,7 @@ const Home = () => {
         )
         setUnCompleteList(res.data.filter(item => item.status !== 3))
       })
+      .finally(() => setIsLoading(false))
   }
 
   const diffTime = (time: string) => {
@@ -43,36 +51,49 @@ const Home = () => {
     const hours = Math.floor((diff % 86400000) / 3600000)
     const minutes = Math.floor((diff % 3600000) / 60000)
     const seconds = Math.floor((diff % 60000) / 1000)
+
     if (diff > 0) {
       if (days >= 1) {
         return (
-          <Tag>
-            {days !== 0 ? days + 'd,' : null}
-            {hours}h
+          <Tag className="flex items-center space-x-1 border-blue-200 bg-blue-100 text-blue-800">
+            <ClockCircleOutlined className="text-blue-500" />
+            <span>
+              {days !== 0 ? days + '天,' : null}
+              {hours}小时
+            </span>
           </Tag>
         )
       }
       return (
-        <Tag color="orange">
-          {days !== 0 ? days + 'd,' : null}
-          {hours < 10 ? '0' + hours : hours}:{minutes < 10 ? '0' + minutes : minutes}:
-          {seconds < 10 ? '0' + seconds : seconds}
+        <Tag className="flex items-center space-x-1 border-orange-200 bg-orange-100 text-orange-800">
+          <ClockCircleOutlined className="text-orange-500" />
+          <span>
+            {days !== 0 ? days + '天,' : null}
+            {hours < 10 ? '0' + hours : hours}:{minutes < 10 ? '0' + minutes : minutes}:
+            {seconds < 10 ? '0' + seconds : seconds}
+          </span>
         </Tag>
       )
     } else {
       if (days === -1) {
         return (
-          <Tag color="red">
-            {Math.abs(hours) < 10 ? '-0' + Math.abs(hours) : hours}:
-            {Math.abs(minutes) < 10 ? '0' + Math.abs(minutes) : Math.abs(minutes)}:
-            {Math.abs(seconds) < 10 ? '0' + Math.abs(seconds) : Math.abs(seconds)}
+          <Tag className="flex items-center space-x-1 border-red-200 bg-red-100 text-red-800">
+            <ExclamationCircleOutlined className="text-red-500" />
+            <span>
+              {hours < 10 ? '-0' + Math.abs(hours) : Math.abs(hours)}:
+              {minutes < 10 ? '0' + Math.abs(minutes) : Math.abs(minutes)}:
+              {seconds < 10 ? '0' + Math.abs(seconds) : Math.abs(seconds)}
+            </span>
           </Tag>
         )
       }
       return (
-        <Tag color="red">
-          {days !== 0 ? days + 'd, ' : null}
-          {Math.abs(hours)}h
+        <Tag className="flex items-center space-x-1 border-red-200 bg-red-100 text-red-800">
+          <ExclamationCircleOutlined className="text-red-500" />
+          <span>
+            {days !== 0 ? days + '天,' : null}
+            {Math.abs(hours)}小时
+          </span>
         </Tag>
       )
     }
@@ -98,69 +119,124 @@ const Home = () => {
     setOverTaskList([...overTaskList])
     setUnCompleteList([...unCompleteList])
   }, [currentTime])
+
   return (
-    <div className="h-full w-full">
-      {/* 头部区域 */}
-      <div className="mx-auto mt-5 w-[90%] py-4 text-xl font-bold md:w-[660px] md:text-2xl">
-        欢迎您，{user?.username}
-      </div>
-      <div className="mx-auto mb-3 w-[90%] py-3 text-sm text-[#888] md:w-[660px]">
-        以下是你当前的任务统计数据
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-12">
+      <div className="container mx-auto px-4 pt-8">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-800 md:text-4xl">
+            欢迎回来, <span className="text-indigo-600">{user?.username}</span>
+          </h1>
+          <p className="mt-2 text-gray-500">以下是你的任务概览</p>
 
-      {/* 统计卡片容器 */}
-      <div className="mx-auto flex w-[90%] flex-col space-y-4 md:w-[660px] md:flex-row md:space-y-0 md:space-x-6">
-        {/* 今日到期卡片 */}
-        <div className="flex flex-1 cursor-pointer flex-col justify-center rounded-lg bg-[#6f9ef6] px-4 py-4 md:px-6">
-          <div className="mb-3 text-sm text-white md:text-base">今日到期</div>
-          <div className="flex items-center justify-between text-[#fff]">
-            <div className="text-xl md:text-2xl">{todayTaskList.length}</div>
-            <FileTextOutlined className="text-lg md:text-xl" />
+          <div className="mt-4 flex items-center text-sm text-gray-400">
+            <ClockCircleOutlined className="mr-1" />
+            {currentTime.format('YYYY年MM月DD日 HH:mm:ss')}
           </div>
         </div>
 
-        {/* 超期任务卡片 */}
-        <div className="flex flex-1 cursor-pointer flex-col justify-center rounded-lg bg-[#fa8e8c] px-4 py-4 md:px-6">
-          <div className="mb-3 text-sm text-white md:text-base">超期任务</div>
-          <div className="flex items-center justify-between text-[#fff]">
-            <div className="text-xl md:text-2xl">{overTaskList.length}</div>
-            <FileTextOutlined className="text-lg md:text-xl" />
-          </div>
-        </div>
-
-        {/* 待完成任务卡片 */}
-        <div className="flex flex-1 cursor-pointer flex-col justify-center rounded-lg bg-[#98de6e] px-4 py-4 md:px-6">
-          <div className="mb-3 text-sm text-white md:text-base">待完成任务</div>
-          <div className="flex items-center justify-between text-[#fff]">
-            <div className="text-xl md:text-2xl">{unCompleteList.length}</div>
-            <FileTextOutlined className="text-lg md:text-xl" />
-          </div>
-        </div>
-      </div>
-
-      {/* 任务列表区域 */}
-      <div className="mx-auto mt-8 w-[90%] md:w-[660px]">
-        {overTaskList.length ? (
-          <div>
-            <div className="text-base font-bold">超期任务</div>
-            <div className="mt-4">
-              <Task taskList={overTaskList} getTaskList={getTaskList} />
+        <div className="mb-10 grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">今日到期</p>
+                <h3 className="mt-2 text-2xl font-bold text-gray-800">{todayTaskList.length}</h3>
+              </div>
+              <div className="rounded-full bg-blue-100 p-4">
+                <FileTextOutlined className="text-xl text-blue-600" />
+              </div>
+            </div>
+            <div className="mt-4 border-t border-gray-100 pt-3">
+              <p className="text-xs text-gray-500">今天结束的任务</p>
             </div>
           </div>
-        ) : null}
 
-        {unCompleteList.length ? (
-          <div>
-            <div className="mt-5 text-base font-bold">待完成任务</div>
-            <div className="mt-4">
-              <Task taskList={unCompleteList} getTaskList={getTaskList} />
+          <div className="rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">超期任务</p>
+                <h3 className="mt-2 text-2xl font-bold text-gray-800">{overTaskList.length}</h3>
+              </div>
+              <div className="rounded-full bg-red-100 p-4">
+                <ExclamationCircleOutlined className="text-xl text-red-600" />
+              </div>
+            </div>
+            <div className="mt-4 border-t border-gray-100 pt-3">
+              <p className="text-xs text-gray-500">已超期任务</p>
             </div>
           </div>
-        ) : (
-          <div>
-            <Empty description="暂无任务数据" />
+
+          <div className="rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500">待完成任务</p>
+                <h3 className="mt-2 text-2xl font-bold text-gray-800">{unCompleteList.length}</h3>
+              </div>
+              <div className="rounded-full bg-green-100 p-4">
+                <CheckCircleOutlined className="text-xl text-green-600" />
+              </div>
+            </div>
+            <div className="mt-4 border-t border-gray-100 pt-3">
+              <p className="text-xs text-gray-500">未完成任务</p>
+            </div>
           </div>
-        )}
+        </div>
+
+        <div className="space-y-8">
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+            </div>
+          ) : (
+            <>
+              {overTaskList.length > 0 && (
+                <div className="rounded-xl bg-white p-6 shadow-md">
+                  <div className="mb-6 flex items-center">
+                    <div className="mr-3 h-6 w-2 rounded-full bg-red-500"></div>
+                    <h2 className="text-xl font-bold text-gray-800">超期任务</h2>
+                    <span className="ml-2 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">
+                      {overTaskList.length} 项
+                    </span>
+                  </div>
+                  <Task taskList={overTaskList} getTaskList={getTaskList} />
+                </div>
+              )}
+
+              {unCompleteList.length > 0 ? (
+                <div className="rounded-xl bg-white p-6 shadow-md">
+                  <div className="mb-6 flex items-center">
+                    <div className="mr-3 h-6 w-2 rounded-full bg-indigo-500"></div>
+                    <h2 className="text-xl font-bold text-gray-800">待完成任务</h2>
+                    <span className="ml-2 rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800">
+                      {unCompleteList.length} 项
+                    </span>
+                  </div>
+                  <Task taskList={unCompleteList} getTaskList={getTaskList} />
+                </div>
+              ) : (
+                !overTaskList.length && (
+                  <div className="rounded-xl bg-white p-12 text-center shadow-md">
+                    <Empty
+                      description={
+                        <span className="text-gray-500">
+                          暂无任务数据，开始创建你的第一个任务吧
+                        </span>
+                      }
+                    />
+                    <Button
+                      className="mt-6 bg-indigo-600 px-6 py-2 text-white transition-colors hover:bg-indigo-700"
+                      onClick={() => {
+                        /* 处理创建任务 */
+                      }}
+                    >
+                      创建任务
+                    </Button>
+                  </div>
+                )
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   )

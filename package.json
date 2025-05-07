@@ -31,6 +31,7 @@
   "dependencies": {
     "@ant-design/icons": "5.x",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@fullcalendar/bootstrap5": "^6.1.17",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
@@ -38,6 +39,8 @@
     "@tailwindcss/vite": "^4.0.17",
     "antd": "^5.24.5",
     "axios": "^1.8.4",
+    "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.12.1",
     "dayjs": "^1.11.13",
     "lodash-es": "^4.17.21",
     "qs": "^6.14.0",

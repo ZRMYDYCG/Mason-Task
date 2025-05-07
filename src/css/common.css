@@ -16,3 +16,8 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* 日历 */
+.fc-toolbar-title {
+  margin-bottom: 30px !important;
+}

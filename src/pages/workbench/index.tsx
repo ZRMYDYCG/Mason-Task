@@ -121,7 +121,7 @@ const Home = () => {
   }, [currentTime])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-12">
+    <div className="min-h-screen pb-12">
       <div className="container mx-auto px-4 pt-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800 md:text-4xl">

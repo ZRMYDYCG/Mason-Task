@@ -2,9 +2,10 @@ import React from 'react'
 import { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { CaretRightOutlined, PlusOutlined } from '@ant-design/icons'
-import { Button, Form, Input, Modal, Progress, message } from 'antd'
+import { Form, Input, Modal, Progress, message } from 'antd'
 import api from '@/api'
 import { ProjectItem } from '@/api/type'
+import clsx from 'clsx'
 
 interface Props {
   setPath: (val: string) => void
@@ -18,7 +19,6 @@ const ProjectList = forwardRef((props: Props, ref) => {
   const [projectList, setProjectList] = useState<ProjectItem[]>([])
   const [current, setCurrent] = useState(-1)
   const [visible, setVisible] = useState(false)
-
   const [form] = Form.useForm()
 
   const getProjectList = () => {
@@ -38,7 +38,7 @@ const ProjectList = forwardRef((props: Props, ref) => {
   }
 
   const clickProject = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: ProjectItem) => {
-    e.preventDefault()
+    e.stopPropagation()
     item.flag = !item.flag
     setProjectList([...projectList])
   }
@@ -50,8 +50,7 @@ const ProjectList = forwardRef((props: Props, ref) => {
   const onOk = () => {
     form
       .validateFields()
-      .then(() => {
-        const values = form.getFieldsValue()
+      .then(values => {
         api.project
           .addProject(values)
           .then(res => {
@@ -63,13 +62,9 @@ const ProjectList = forwardRef((props: Props, ref) => {
               message.error(res.msg)
             }
           })
-          .catch(() => {
-            onCancel()
-          })
+          .catch(onCancel)
       })
-      .catch(() => {
-        message.error('表单填写有误,请检查')
-      })
+      .catch(() => message.error('表单填写有误,请检查'))
   }
 
   const onCancel = () => {
@@ -78,21 +73,16 @@ const ProjectList = forwardRef((props: Props, ref) => {
   }
 
   useEffect(() => {
-    if (!projectList.length) {
-      getProjectList()
-    }
+    !projectList.length && getProjectList()
   }, [])
 
   useEffect(() => {
-    const id = searchParams.get('id') as string
-    const name = searchParams.get('name') as string
-    projectList.map(item => {
-      if (item.id === +id) {
-        item.name = name
-      }
-    })
-    setProjectList([...projectList])
-    setCurrent(+id)
+    const id = searchParams.get('id')
+    const name = searchParams.get('name')
+    if (id && name) {
+      setProjectList(prev => prev.map(item => (item.id === +id ? { ...item, name } : item)))
+      setCurrent(+id)
+    }
   }, [searchParams])
 
   useImperativeHandle(ref, () => ({
@@ -100,70 +90,92 @@ const ProjectList = forwardRef((props: Props, ref) => {
   }))
 
   return (
-    <div className="mt-7">
-      <Button
-        type="primary"
-        size="large"
-        icon={<PlusOutlined />}
-        style={{ width: 260, marginBottom: 10 }}
-        onClick={() => setVisible(true)}
-      >
-        新建项目
-      </Button>
-      {projectList.length
-        ? projectList.map(item => {
-            return (
-              <div key={item.id}>
-                <div
-                  className="relative mb-3 flex cursor-pointer items-center px-1 py-2"
-                  style={{ background: current === item.id ? '#fff' : 'inherit' }}
-                >
-                  <div className="flex items-center" onClick={e => clickProject(e, item)}>
-                    <CaretRightOutlined style={{ color: '#999' }} />
-                  </div>
-                  <div className="ml-2" onClick={() => clickItem(item)}>
-                    {item.name}
-                  </div>
-                  <div className="absolute right-3">
-                    {item.tasks.length ? item.tasks.length : null}
-                  </div>
-                </div>
-                {item.flag ? (
-                  <div className="ml-7 text-xs">
-                    <div className="mb-4 flex items-center">
-                      <div>全部:</div>
-                      <div className="ml-1">
-                        {item.tasks.filter(i => i.status === 4).length}/{item.tasks.length}
-                      </div>
-                      <div className="relative top-[3px] left-1 flex-1">
-                        <Progress
-                          percent={
-                            item.tasks.filter(i => i.status === 4).length / item.tasks.length
-                          }
-                        ></Progress>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
+    <div className="flex-1">
+      <div className="mb-4 flex items-center justify-between px-1">
+        <span className="text-sm font-medium text-gray-500">我的项目</span>
+        <PlusOutlined
+          className="cursor-pointer text-gray-400 transition-colors hover:scale-110 hover:text-blue-500"
+          onClick={() => setVisible(true)}
+        />
+      </div>
+
+      <div className={clsx('custom-scrollbar max-h-[calc(100vh-380px)] overflow-y-auto pr-2')}>
+        {projectList.map(item => (
+          <div key={item.id} className="group mb-1">
+            <div
+              className={clsx(
+                'flex h-10 items-center rounded-lg px-2 transition-all',
+                'cursor-pointer hover:bg-white hover:shadow-sm',
+                current === item.id
+                  ? 'scale-[1.02] transform bg-white shadow-sm'
+                  : 'hover:-translate-x-1'
+              )}
+              onClick={() => clickItem(item)}
+            >
+              <div
+                className="flex items-center pr-2 text-gray-400 transition-colors hover:text-blue-500"
+                onClick={e => clickProject(e, item)}
+              >
+                <CaretRightOutlined
+                  className={clsx(
+                    'transition-transform duration-300',
+                    item.flag ? 'rotate-90' : ''
+                  )}
+                />
               </div>
-            )
-          })
-        : null}
+              <div className="flex-1 truncate text-sm text-gray-700">{item.name}</div>
+              <div className="ml-2 text-xs text-gray-400">{item.tasks.length || ''}</div>
+            </div>
+
+            {item.flag && (
+              <div className="mt-1 ml-6 space-y-2 border-l-2 border-gray-100 pb-2 pl-3">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-1 text-gray-500">
+                    <span className="text-nowrap">进度:</span>
+                    <span className="font-medium">
+                      {item.tasks.filter(i => i.status === 4).length}/{item.tasks.length}
+                    </span>
+                  </div>
+                  <Progress
+                    percent={
+                      (item.tasks.filter(i => i.status === 4).length / (item.tasks.length || 1)) *
+                      100
+                    }
+                    showInfo={false}
+                    strokeColor="#3b82f6"
+                    className="w-16"
+                    strokeWidth={6}
+                    trailColor="#e5e7eb"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
       <Modal
         open={visible}
         title="新建项目"
-        okText="添加"
+        okText="创建"
         maskClosable={false}
         onOk={onOk}
         onCancel={onCancel}
+        destroyOnClose
+        className="rounded-lg"
       >
-        <Form form={form}>
+        <Form form={form} layout="vertical">
           <Form.Item
             name="name"
             label="项目名称"
-            rules={[{ required: true, message: '项目名称不能为空' }]}
+            rules={[{ required: true, message: '请输入项目名称' }]}
           >
-            <Input placeholder="请输入项目名称" allowClear autoComplete="off" />
+            <Input
+              placeholder="例如: 产品迭代计划"
+              allowClear
+              autoComplete="off"
+              className="rounded-lg hover:border-blue-300 focus:border-blue-500"
+            />
           </Form.Item>
         </Form>
       </Modal>
